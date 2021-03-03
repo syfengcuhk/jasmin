@@ -5,6 +5,10 @@ This repo requires a well trained Dutch ASR system in Kaldi. Please refer to [ht
 s5/ contains experiments on JASMIN Netherlands (NL) Dutch 
 s5_vl/ contains experiments on JASMIN Flanders (VL) Dutch
 
+Prerequisites for using this repo:
+An installed Kaldi toolkit
+numpy
+
 Author: Dr. Siyuan Feng,
 Postdoctoral Researcher,
 Multimedia Computing Group,
