@@ -4,3 +4,9 @@ This repo requires a well trained Dutch ASR system in Kaldi. Please refer to [ht
 
 s5/ contains experiments on JASMIN Netherlands (NL) Dutch 
 s5_vl/ contains experiments on JASMIN Flanders (VL) Dutch
+
+Author: Dr. Siyuan Feng,
+Postdoctoral Researcher,
+Multimedia Computing Group,
+Delft University of Technology
+Email: s.feng@tudelft.nl
