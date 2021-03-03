@@ -6,8 +6,13 @@ s5/ contains experiments on JASMIN Netherlands (NL) Dutch
 s5_vl/ contains experiments on JASMIN Flanders (VL) Dutch
 
 Prerequisites for using this repo:
+Software:
 An installed Kaldi toolkit
 numpy
+
+Corpus:
+Jasmin corpus (https://www.aclweb.org/anthology/L06-1141/)
+
 
 Author: Dr. Siyuan Feng,
 Postdoctoral Researcher,
