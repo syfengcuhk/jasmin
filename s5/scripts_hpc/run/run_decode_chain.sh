@@ -235,8 +235,8 @@ if [ $stage -le 21 ] && [ $stop_stage -gt 21 ]; then
     --extra-right-context $extra_right_context \
     --frames-per-chunk $frames_per_chunk \
     $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
 fi
 
 if [ $stage -le 22 ] && [ $stop_stage -gt 22 ]; then
@@ -253,8 +253,8 @@ if [ $stage -le 22 ] && [ $stop_stage -gt 22 ]; then
     --extra-right-context $extra_right_context \
     --frames-per-chunk $frames_per_chunk \
     $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
 fi
 
 if [ $stage -le 31 ] && [ $stop_stage -gt 31 ]; then
@@ -272,8 +272,8 @@ if [ $stage -le 31 ] && [ $stop_stage -gt 31 ]; then
     --extra-right-context $extra_right_context \
     --frames-per-chunk $frames_per_chunk \
     $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}${decode_iter_suffix} || exit 1;
-  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
 fi
 
 if [ $stage -le 32 ] && [ $stop_stage -gt 32 ]; then
@@ -290,8 +290,8 @@ if [ $stage -le 32 ] && [ $stop_stage -gt 32 ]; then
     --extra-right-context $extra_right_context \
     --frames-per-chunk $frames_per_chunk \
     $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
 fi
 
 if [ $stage -le 33 ] && [ $stop_stage -gt 33 ]; then
@@ -307,8 +307,8 @@ if [ $stage -le 33 ] && [ $stop_stage -gt 33 ]; then
     --extra-right-context $extra_right_context \
     --frames-per-chunk $frames_per_chunk \
     $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1  
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1  
 
 fi
 
@@ -325,8 +325,8 @@ if [ $stage -le 34 ] && [ $stop_stage -gt 34 ]; then
     --extra-right-context $extra_right_context \
     --frames-per-chunk $frames_per_chunk \
     $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
 
 fi
 
@@ -346,8 +346,8 @@ if [ $stage -le 35 ] && [ $stop_stage -gt 35 ]; then
       --extra-right-context $extra_right_context \
       --frames-per-chunk $frames_per_chunk \
       $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}${decode_iter_suffix} || exit 1;
-    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+#    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
 
   done
 fi
@@ -368,8 +368,8 @@ if [ $stage -le 36 ] && [ $stop_stage -gt 36 ]; then
       --extra-right-context $extra_right_context \
       --frames-per-chunk $frames_per_chunk \
       $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}${decode_iter_suffix} || exit 1;
-    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+#    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
 
   done
 fi
@@ -392,8 +392,8 @@ if [ $stage -le 41 ] && [ $stop_stage -gt 41 ]; then
         --extra-right-context $extra_right_context \
         --frames-per-chunk $frames_per_chunk \
         $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-        steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-          $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
+#        steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#          $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
       fi
     done
   done 
@@ -417,8 +417,8 @@ if [ $stage -le 42 ] && [ $stop_stage -gt 42 ]; then
         --extra-right-context $extra_right_context \
         --frames-per-chunk $frames_per_chunk \
         $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-        steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-          $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
+#        steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#          $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
       fi
     done
   done
@@ -439,8 +439,8 @@ if [ $stage -le 43 ] && [ $stop_stage -gt 43 ]; then
       --extra-right-context $extra_right_context \
       --frames-per-chunk $frames_per_chunk \
       $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-      $input_data  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
+#    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#      $input_data  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
   done
 fi
 
@@ -459,8 +459,8 @@ if [ $stage -le 44 ] && [ $stop_stage -gt 44 ]; then
       --extra-right-context $extra_right_context \
       --frames-per-chunk $frames_per_chunk \
       $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-      $input_data  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
+#    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#      $input_data  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
   done
 fi
 
