@@ -6,6 +6,7 @@
 # JASMIN has two speech types, read speech (comp-q) and human-machine interaction (comp-p)
 # JASMIN has NL Dutch and VL Dutch
 # In jasmin/s5/ we focus on NL Dutch in Jasmin; go to jasmin/s5_vl/ for VL Dutch in Jasmin
+# For VL (Flanders) Dutch data partition, we do not consider VL region-wise accent (FL1-FL4). Also we do not consider non-native VL data (group 3 & 4)
 stage=0
 stop_stage=1
 decode_iter=final
@@ -198,6 +199,123 @@ if [ $stage -le 22 ] && [ $stop_stage -gt 22 ]; then
     --extra-right-context $extra_right_context \
     --frames-per-chunk $frames_per_chunk \
     $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
-  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
-    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
 fi
+
+if [ $stage -le 31 ] && [ $stop_stage -gt 31 ]; then
+  echo "Decoding...: For Read speech, Group specific data"
+  input_data=data/test_read_group${test_group_ID}_hires${debug_subset}
+  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+  output_suffix=test_read_group${test_group_ID}${debug_subset}
+  # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
+  steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+    --online-ivector-dir $input_ivector \
+    --scoring-opts "--min-lmwt 5 " \
+    --iter $decode_iter \
+    --use-gpu $use_gpu \
+    --extra-left-context $extra_left_context \
+    --extra-right-context $extra_right_context \
+    --frames-per-chunk $frames_per_chunk \
+    $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}${decode_iter_suffix} || exit 1;
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+fi
+if [ $stage -le 32 ] && [ $stop_stage -gt 32 ]; then
+  echo "Decoding...: For HMI speech, Group specific data"
+  input_data=data/test_hmi_group${test_group_ID}_hires${debug_subset}
+  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+  output_suffix=test_hmi_group${test_group_ID}${debug_subset}
+  # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
+  steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+    --online-ivector-dir $input_ivector \
+    --scoring-opts "--min-lmwt 5 " \
+    --use-gpu $use_gpu \
+    --extra-left-context $extra_left_context \
+    --extra-right-context $extra_right_context \
+    --frames-per-chunk $frames_per_chunk \
+    $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+fi
+
+if [ $stage -le 33 ] && [ $stop_stage -gt 33 ]; then
+  echo "Decoding...: For Read speech, gender-specific data"
+  input_data=data/test_read_${test_gender}_hires${debug_subset}
+  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+  output_suffix=test_read_${test_gender}${debug_subset}
+  steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+    --online-ivector-dir $input_ivector \
+    --scoring-opts "--min-lmwt 5 " \
+    --use-gpu $use_gpu \
+    --extra-left-context $extra_left_context \
+    --extra-right-context $extra_right_context \
+    --frames-per-chunk $frames_per_chunk \
+    $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+
+fi
+if [ $stage -le 34 ] && [ $stop_stage -gt 34 ]; then
+  echo "Decoding...: For HMI speech, gender-specific data"
+  input_data=data/test_hmi_${test_gender}_hires${debug_subset}
+  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+  output_suffix=test_hmi_${test_gender}${debug_subset}
+  steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+    --online-ivector-dir $input_ivector \
+    --scoring-opts "--min-lmwt 5 " \
+    --use-gpu $use_gpu \
+    --extra-left-context $extra_left_context \
+    --extra-right-context $extra_right_context \
+    --frames-per-chunk $frames_per_chunk \
+    $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
+#  steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+
+fi
+if [ $stage -le 35 ] && [ $stop_stage -gt 35 ]; then
+  # Gender-specific on group-wise Read data
+  for gender_label in male ; do
+  #for gender_label in female male; do
+    input_data=data/test_read_group${test_group_ID}_${gender_label}_hires${debug_subset}
+    input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+    output_suffix=test_read_group${test_group_ID}_${gender_label}${debug_subset}
+    # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
+    steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+      --online-ivector-dir $input_ivector \
+      --scoring-opts "--min-lmwt 5 " \
+      --iter $decode_iter \
+      --use-gpu $use_gpu \
+      --extra-left-context $extra_left_context \
+      --extra-right-context $extra_right_context \
+      --frames-per-chunk $frames_per_chunk \
+      $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}${decode_iter_suffix} || exit 1;
+#    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+#
+  done
+fi
+
+if [ $stage -le 36 ] && [ $stop_stage -gt 36 ]; then
+  # Gender-specific on group-wise HMI data
+  for gender_label in female male; do
+    input_data=data/test_hmi_group${test_group_ID}_${gender_label}_hires${debug_subset}
+    input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+    output_suffix=test_hmi_group${test_group_ID}_${gender_label}${debug_subset}
+    # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
+    steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+      --online-ivector-dir $input_ivector \
+      --scoring-opts "--min-lmwt 5 " \
+      --iter $decode_iter \
+      --use-gpu $use_gpu \
+      --extra-left-context $extra_left_context \
+      --extra-right-context $extra_right_context \
+      --frames-per-chunk $frames_per_chunk \
+      $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}${decode_iter_suffix} || exit 1;
+#    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#    $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore || exit 1
+
+  done
+fi
+
+echo "$0: succeeded"

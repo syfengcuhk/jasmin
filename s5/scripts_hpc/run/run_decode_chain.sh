@@ -166,6 +166,9 @@ if [ $stage -le 6 ] && [ $stop_stage -gt 6 ]; then
     # only for groups 1 2 and 5 dialect region labels apply (native only)
     for group_id in 1 2 5; do
       utils/subset_data_dir.sh --spk-list $local_dir/spklist_dialectregion_N${dialect_region_label} data/test_read_group${group_id}_hires data/test_read_group${group_id}_N${dialect_region_label}_hires
+      # To do: create gender-specific dir based on dialect-wise dirs.
+      utils/subset_data_dir.sh --spk-list $local_dir/spklist_female_${lang} data/test_read_group${group_id}_N${dialect_region_label}_hires data/test_read_group${group_id}_N${dialect_region_label}_female_hires
+      utils/subset_data_dir.sh --spk-list $local_dir/spklist_male_${lang} data/test_read_group${group_id}_N${dialect_region_label}_hires data/test_read_group${group_id}_N${dialect_region_label}_male_hires
     done
   done
 fi
@@ -179,6 +182,9 @@ if [ $stage -le 7 ] && [ $stop_stage -gt 7 ]; then
     # only for groups 1 2 and 5 dialect region labels apply (native only)
     for group_id in 1 2 5; do
       utils/subset_data_dir.sh --spk-list $local_dir/spklist_dialectregion_N${dialect_region_label} data/test_hmi_group${group_id}_hires data/test_hmi_group${group_id}_N${dialect_region_label}_hires
+      # To do: create gender-specific dir based on dialect-wise dirs.
+      utils/subset_data_dir.sh --spk-list $local_dir/spklist_female_${lang} data/test_hmi_group${group_id}_N${dialect_region_label}_hires data/test_hmi_group${group_id}_N${dialect_region_label}_female_hires
+      utils/subset_data_dir.sh --spk-list $local_dir/spklist_male_${lang} data/test_hmi_group${group_id}_N${dialect_region_label}_hires data/test_hmi_group${group_id}_N${dialect_region_label}_male_hires
     done
   done
 fi
@@ -192,6 +198,10 @@ if [ $stage -le 8 ] && [ $stop_stage -gt 8 ]; then
     # only for groups 4 dialect region labels apply (non native adults only)
     for group_id in 4; do
       utils/subset_data_dir.sh --spk-list $local_dir/spklist_CEF_${CEF_label} data/test_read_group${group_id}_hires data/test_read_group${group_id}_${CEF_label}_hires
+      # To do: create gender-specific dir
+      utils/subset_data_dir.sh --spk-list $local_dir/spklist_female_${lang} data/test_read_group${group_id}_${CEF_label}_hires data/test_read_group${group_id}_${CEF_label}_female_hires
+      utils/subset_data_dir.sh --spk-list $local_dir/spklist_male_${lang} data/test_read_group${group_id}_${CEF_label}_hires data/test_read_group${group_id}_${CEF_label}_male_hires
+      # data/test_read_group${group_id}_${CEF_label}_{female,male}_hires
     done
   done
 fi
@@ -206,6 +216,10 @@ if [ $stage -le 9 ] && [ $stop_stage -gt 9 ]; then
     # only for groups 4 dialect region labels apply (non native adults only)
     for group_id in 4; do
       utils/subset_data_dir.sh --spk-list $local_dir/spklist_CEF_${CEF_label} data/test_hmi_group${group_id}_hires data/test_hmi_group${group_id}_${CEF_label}_hires
+      # To do: create gender-specific dir
+      utils/subset_data_dir.sh --spk-list $local_dir/spklist_female_${lang} data/test_hmi_group${group_id}_${CEF_label}_hires data/test_hmi_group${group_id}_${CEF_label}_female_hires
+      utils/subset_data_dir.sh --spk-list $local_dir/spklist_male_${lang} data/test_hmi_group${group_id}_${CEF_label}_hires data/test_hmi_group${group_id}_${CEF_label}_male_hires
+      # data/test_read_group${group_id}_${CEF_label}_{female,male}_hires
     done
   done
 fi
@@ -464,6 +478,94 @@ if [ $stage -le 44 ] && [ $stop_stage -gt 44 ]; then
   done
 fi
 
+if [ $stage -le 45 ] && [ $stop_stage -gt 45 ]; then
+  echo "Decoding...: For Read Speech, gender within region-specific data"
+  # Groups 1, 2, and 5 contain N1, N2, N3, N4
+  # Groups 4 contains A1, A2 and B1
+  for group_id in ${test_group_ID}; do
+    for region_id in N1 N2 N3 N4; do
 
+      input_data=data/test_read_group${group_id}_${region_id}_${test_gender}_hires
+      if [ -s $input_data/feats.scp ]; then
+        input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+        output_suffix=test_read_group${group_id}_${region_id}_${test_gender}
+        steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+        --online-ivector-dir $input_ivector \
+        --scoring-opts "--min-lmwt 5 " \
+        --use-gpu $use_gpu \
+        --extra-left-context $extra_left_context \
+        --extra-right-context $extra_right_context \
+        --frames-per-chunk $frames_per_chunk \
+        $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
+#        steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#          $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
+      fi
+    done
+  done
+fi
+
+if [ $stage -le 46 ] && [ $stop_stage -gt 46 ]; then
+  echo "Decoding...: For HMI Speech, gender within region-specific data"
+  # Groups 1, 2, and 5 contain N1, N2, N3, N4
+  # Groups 4 contains A1, A2 and B1
+  for group_id in ${test_group_ID}; do
+    for region_id in N1 N2 N3 N4; do
+
+      input_data=data/test_hmi_group${group_id}_${region_id}_${test_gender}_hires
+      if [ -s $input_data/feats.scp ]; then
+        input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+        output_suffix=test_hmi_group${group_id}_${region_id}_${test_gender}
+        steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+        --online-ivector-dir $input_ivector \
+        --scoring-opts "--min-lmwt 5 " \
+        --use-gpu $use_gpu \
+        --extra-left-context $extra_left_context \
+        --extra-right-context $extra_right_context \
+        --frames-per-chunk $frames_per_chunk \
+        $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
+#        steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#          $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
+      fi
+    done
+  done
+fi
+if [ $stage -le 47 ] && [ $stop_stage -gt 47 ]; then
+  echo "Decoding: Read speech, gender-specific group 4 (non-native adults: CEF level)"
+  group_id=4
+  for CEF_label in A1 A2 B1; do
+    input_data=data/test_read_group${group_id}_${CEF_label}_${test_gender}_hires
+    input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+    output_suffix=test_read_group${group_id}_${CEF_label}_${test_gender}
+    steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+      --online-ivector-dir $input_ivector \
+      --scoring-opts "--min-lmwt 5 " \
+      --use-gpu $use_gpu \
+      --extra-left-context $extra_left_context \
+      --extra-right-context $extra_right_context \
+      --frames-per-chunk $frames_per_chunk \
+      $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
+#    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#      $input_data  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
+  done
+fi
+if [ $stage -le 48 ] && [ $stop_stage -gt 48 ]; then
+  echo "Decoding: HMI speech, gender-specific group 4 (non-native adults: CEF level)"
+  group_id=4
+  for CEF_label in A1 A2 B1; do
+    input_data=data/test_hmi_group${group_id}_${CEF_label}_${test_gender}_hires
+    input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+    output_suffix=test_hmi_group${group_id}_${CEF_label}_${test_gender}
+    steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
+      --online-ivector-dir $input_ivector \
+      --scoring-opts "--min-lmwt 5 " \
+      --use-gpu $use_gpu \
+      --extra-left-context $extra_left_context \
+      --extra-right-context $extra_right_context \
+      --frames-per-chunk $frames_per_chunk \
+      $cgn_asr_model/graph $input_data $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} || exit 1;
+#    steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" $cgn_root/data/lang_s_test_{tgpr,fgconst} \
+#      $input_data  $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix} $cgn_asr_model/decode_jasmin_${lang}_${output_suffix}${gpu_suffix}_rescore
+  done
+fi
 echo "$0: succeeded"
 
