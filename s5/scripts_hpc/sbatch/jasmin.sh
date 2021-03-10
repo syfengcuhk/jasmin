@@ -6,7 +6,7 @@
 # The default Quality of Service is the 'short' QoS (maximum run time: 4 hours)
 #SBATCH --qos=short
 # The default run (wall-clock) time is 1 minute
-#SBATCH --time=00:20:00
+#SBATCH --time=01:00:00
 # The default number of parallel tasks per job is 1
 #SBATCH --ntasks=1
 # Request 1 CPU per active thread of your program (assume 1 unless you specifically set this)
@@ -41,5 +41,9 @@ test_group_ID=5
 #srun bash scripts_hpc/run/run_decode_chain.sh --stage 43 --stop-stage 44 --nj 1 --num-threads-decode 20 --use-gpu true #--test-group-ID 5
 #srun bash scripts_hpc/run/run_decode_chain.sh --stage 44 --stop-stage 45 --nj 1 --num-threads-decode 20 --use-gpu true #--test-group-ID 5
 
+test_group_ID=5
+srun bash scripts_hpc/run/run_decode_chain.sh --stage 48 --stop-stage 49 --nj 1 --num-threads-decode 20 --use-gpu true --test-gender female --test-group-ID ${test_group_ID} # 1,2,5
+#srun bash scripts_hpc/run/run_decode_chain.sh --stage 48 --stop-stage 49 --nj 1 --num-threads-decode 20 --use-gpu true --test-gender male --test-group-ID ${test_group_ID} # 1,2,5
 
-srun bash scripts_hpc/run/run_decode_chain.sh --stage 36 --stop-stage 37 --nj 1 --num-threads-decode 20 --use-gpu true --test-group-ID $test_group_ID
+
+#srun bash scripts_hpc/run/run_decode_chain.sh --stage 36 --stop-stage 37 --nj 1 --num-threads-decode 20 --use-gpu true --test-group-ID $test_group_ID
