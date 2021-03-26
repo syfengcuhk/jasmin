@@ -1,5 +1,5 @@
 This repo contains code to implement experiments in our paper submitted to INTERSPEECH 2021:
-  S. Feng, O. Kudina, B. M. Halpern, O. Scharenborg, "Quantifying Bias in Automatic Speech Recognition", submitted to INTERSPEECH 2021.
+  S. Feng, O. Kudina, B. M. Halpern and O. Scharenborg, "Quantifying Bias in Automatic Speech Recognition", submitted to INTERSPEECH 2021.
 Update 10 Mar:
   This repo is under construction
 

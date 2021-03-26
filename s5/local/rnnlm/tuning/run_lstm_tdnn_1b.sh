@@ -33,6 +33,7 @@ output_l2=0.001 # output-layer l2 regularize
 epochs=20
 stage=-10
 stop_stage=5
+rnnlm_rescore_stage=0 # 1 means directly wer scoring
 train_stage=-10
 num_jobs_initial=1
 num_jobs_final=1
@@ -137,7 +138,7 @@ if [ $stage -le 4 ] && [ $stop_stage -gt 4 ]  ; then
 
     # Lattice rescoring
     rnnlm/lmrescore_pruned.sh \
-      --cmd "$decode_cmd" \
+      --cmd "$decode_cmd" --stage $rnnlm_rescore_stage \
       --weight 0.8 --max-ngram-order $ngram_order \
       $cgn_root/data/lang_s_test_$LM $dir \
       data/${input_data}_hires ${decode_dir} \

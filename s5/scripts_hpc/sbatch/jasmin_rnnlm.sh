@@ -11,9 +11,9 @@
 #SBATCH --ntasks=1
 # Request 1 CPU per active thread of your program (assume 1 unless you specifically set this)
 # The default number of CPUs per task is 1 (note: CPUs are always allocated per 2)
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=10
 # The default memory per node is 1024 megabytes (1GB) (for multiple tasks, specify --mem-per-cpu instead)
-#SBATCH --mem=3G
+#SBATCH --mem=8G
 # Set mail type to 'END' to receive a mail when the job finishes
 # Do not enable mails when submitting large numbers (>20) of jobs at once
 ##SBATCH --gres=gpu
@@ -61,7 +61,7 @@ model_name=$cgn_root/exp/chain/tdnnf_related/aug_related/tdnn_blstm1a_sp_bi_epoc
 #input_data=test_hmi_group3_male
 #input_data=test_hmi_group4_male
 #input_data=test_hmi_group5_male
-#srun bash local/rnnlm/tuning/run_lstm_tdnn_1b.sh --ac-model-dir $model_name --stage 4 --stop-stage 5   --epochs 20 --input-data "$input_data"
+#srun bash local/rnnlm/tuning/run_lstm_tdnn_1b.sh --ac-model-dir $model_name --stage 4 --stop-stage 5   --epochs 20 --input-data "$input_data" --rnnlm-rescore-stage 1
 
 
 ### Region-wise on Group 1,2,5
@@ -90,7 +90,7 @@ model_name=$cgn_root/exp/chain/tdnnf_related/aug_related/tdnn_blstm1a_sp_bi_epoc
 #input_data=test_read_group5_N4_female
 #input_data=test_read_group1_N2_male
 #input_data=test_read_group1_N3_male
-#input_data=test_read_group1_N4_male
+input_data=test_read_group1_N4_male
 #input_data=test_read_group2_N1_male
 #input_data=test_read_group2_N2_male
 #input_data=test_read_group2_N3_male
@@ -110,7 +110,7 @@ model_name=$cgn_root/exp/chain/tdnnf_related/aug_related/tdnn_blstm1a_sp_bi_epoc
 #input_data=test_hmi_group5_N1_female
 #input_data=test_hmi_group5_N2_female
 #input_data=test_hmi_group5_N3_female
-input_data=test_hmi_group5_N4_female
+#input_data=test_hmi_group5_N4_female
 #input_data=test_hmi_group1_N2_male
 #input_data=test_hmi_group1_N3_male
 #input_data=test_hmi_group1_N4_male
@@ -155,4 +155,5 @@ input_data=test_hmi_group5_N4_female
 #input_data=test_hmi_group4_A2_male
 #input_data=test_hmi_group4_B1_male
 
-bash local/rnnlm/tuning/run_lstm_tdnn_1b.sh --ac-model-dir $model_name --stage 4 --stop-stage 5   --epochs 20 --input-data "$input_data" 
+srun bash local/rnnlm/tuning/run_lstm_tdnn_1b.sh --ac-model-dir $model_name --stage 4 --stop-stage 5   --epochs 20 --input-data "$input_data" --rnnlm-rescore-stage 1
+#bash local/rnnlm/tuning/run_lstm_tdnn_1b.sh --ac-model-dir $model_name --stage 4 --stop-stage 5   --epochs 20 --input-data "$input_data" 
