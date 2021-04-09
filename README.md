@@ -12,6 +12,7 @@ s5_vl/ contains experiments on evaluating Jasmin Flanders (VL) Dutch data partit
 
 Prerequisites for using this repo:
 Software:
+A pre-trained Dutch ASR system by Kaldi (ASR models are not included in this repo).
 An installed Kaldi toolkit
 numpy
 
