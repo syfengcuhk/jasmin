@@ -62,6 +62,78 @@ if [ $stage -le 0 ] && [ $stop_stage -gt 0 ]; then
     done
   done
 fi
+if [ $stage -le 2 ] && [ $stop_stage -gt 2 ]; then
+  # non-native adult group, (group 4)
+  for style in read hmi ; do
+    for gender in _hires _female_hires _male_hires; do
+      for CEF in A1 A2 B1 ; do
+        rtask=test_${style}_group4_${CEF}${gender}
+        mkdir -p $dumpdir/$rtask/delta${do_delta} || exit 1
+        if $train_cmvn; then
+          cmvn_file=$cgn_root/data/train/cmvn.ark
+          cmvn_tag=""
+        else
+          compute-cmvn-stats scp:data/$rtask/feats.scp data/$rtask/cmvn.ark
+          cmvn_file=data/$rtask/cmvn.ark
+          cmvn_tag="_self_cmvn"
+        fi
+        dump.sh --cmd "run.pl" --nj $nj_dump_feats --do_delta ${do_delta} \
+          data/$rtask/feats.scp $cmvn_file exp/dump_feats/recog/${rtask}${cmvn_tag} $dumpdir/$rtask/delta${do_delta}${cmvn_tag} 
+      done 
+    done
+  done
+fi
 
 # To do: implement group wise and overall
+if [ $stage -le 3 ] && [ $stop_stage -gt 3 ]; then
+  echo "Group wise data: dump"
+  for group_ID in 1 2 5 3 4; do
+    for style in read hmi; do
+      for gender in _hires _female_hires _male_hires; do
+       rtask=test_${style}_group${group_ID}${gender} #
+       mkdir -p $dumpdir/$rtask/delta${do_delta} || exit 1
+       if $train_cmvn; then
+         cmvn_file=$cgn_root/data/train/cmvn.ark
+         cmvn_tag=""
+       else
+         compute-cmvn-stats scp:data/$rtask/feats.scp data/$rtask/cmvn.ark
+         cmvn_file=data/$rtask/cmvn.ark
+         cmvn_tag="_self_cmvn"
+       fi
+       dump.sh --cmd "run.pl" --nj $nj_dump_feats --do_delta ${do_delta} \
+         data/$rtask/feats.scp $cmvn_file exp/dump_feats/recog/${rtask}${cmvn_tag} $dumpdir/$rtask/delta${do_delta}${cmvn_tag}/
+      done
+    done    
+  done
+
+fi
+
+# To do: dump overall, overall_female and overall_male
+
+# To do dump Jasmin Flanders part data
+if [ $stage -le 5 ] && [ $stop_stage -gt 5 ]; then
+  echo "Flanders part data dump: age groups"
+  dumpdir_vl=${dumpdir}_vl
+  root=data_vl
+  for group_ID in 1 2 5; do
+    for style in read hmi; do
+      for gender in _hires _female_hires _male_hires; do
+        rtask=test_${style}_group${group_ID}${gender}
+        mkdir -p $dumpdir_vl/$rtask/delta${do_delta} || exit 1
+        if $train_cmvn; then
+          cmvn_file=$cgn_root/data/train/cmvn.ark
+          cmvn_tag=""
+        else
+          compute-cmvn-stats scp:$root/$rtask/feats.scp $root/$rtask/cmvn.ark
+          cmvn_file=$root/$rtask/cmvn.ark
+          cmvn_tag="_self_cmvn"
+        fi
+        dump.sh --cmd "run.pl" --nj $nj_dump_feats --do_delta ${do_delta} \
+          $root/$rtask/feats.scp $cmvn_file exp/dump_feats_vl/recog/${rtask}${cmvn_tag} $dumpdir_vl/$rtask/delta${do_delta}${cmvn_tag} 
+      done
+    done
+  done
+
+fi
+
 echo "succeeded"

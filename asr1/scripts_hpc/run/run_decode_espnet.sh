@@ -31,6 +31,7 @@ batchsize_decoding=0
 dumpdir=dump
 train_cmvn=true
 asr_model_folder_base=exp_no_unk/train_pytorch_train_pytorch_conformer_large/
+use_valbest_average=false # if true use val best
 lm_model_folder_base=exp_no_unk/train_rnnlm_pytorch_lm_2l1024 #_unigram5000/
 n_average=5
 lm_n_average=6
@@ -43,11 +44,12 @@ decode_tag="_lm_no_unk${decode_tag}"
 if [ -z $lmtag ] ; then
   lmtag=$(basename  ${lm_config%.*} )
 fi
-if [ ! "$nbpe" = 5000 ]; then
-  asr_model_folder=${asr_model_folder_base}_nbpe${nbpe}
-else
-  asr_model_folder=$asr_model_folder_base
-fi
+#if [ ! "$nbpe" = 5000 ]; then
+#  asr_model_folder=${asr_model_folder_base}_nbpe${nbpe}
+#else
+#  asr_model_folder=$asr_model_folder_base
+#fi
+asr_model_folder=$asr_model_folder_base
 lm_model_folder=${lm_model_folder_base}_unigram${nbpe}
 work_dir=$asr_model_folder
 
@@ -60,27 +62,40 @@ else
   dump_tag=""
 fi
 if [ $stage -le 0 ] && [ $stop_stage -gt 0 ]; then
+  if [ "$dumpdir" = "dump_vl" ]; then
+    data_suffix=_vl
+  fi
   echo "$0: generate data_${bpemode}${nbpe}.json to $dumpdir/$eval_set/delta${do_delta}${dump_tag}/"
   if [ ! -d $dumpdir/$eval_set/delta${do_delta}${dump_tag}/ ]; then
     echo "$dumpdir/$eval_set/delta${do_delta}${dump_tag}/ not found, exit"
     exit 0
   fi
-  if [ ! -f data/$eval_set/text_utf8 ]; then
-    iconv -f latin1 -t utf-8 data/$eval_set/text > data/$eval_set/text_utf8
-    mv data/$eval_set/text data/$eval_set/text.latin1.bkp
-    mv data/$eval_set/text_utf8 data/$eval_set/text
+  if [ ! -f data${data_suffix}/$eval_set/text.latin1.bkp ]; then
+    iconv -f latin1 -t utf-8 data${data_suffix}/$eval_set/text > data${data_suffix}/$eval_set/text_utf8
+    mv data${data_suffix}/$eval_set/text data${data_suffix}/$eval_set/text.latin1.bkp
+    mv data${data_suffix}/$eval_set/text_utf8 data${data_suffix}/$eval_set/text
   fi
   data2json.sh --feat $dumpdir/$eval_set/delta${do_delta}${dump_tag}/feats.scp --bpecode ${bpemodel}.model \
-    data/$eval_set $dict > $dumpdir/$eval_set/delta${do_delta}${dump_tag}/data_${bpemode}${nbpe}.json
+    data${data_suffix}/$eval_set $dict > $dumpdir/$eval_set/delta${do_delta}${dump_tag}/data_${bpemode}${nbpe}.json
 fi
 
 if [ $stage -le 1 ] && [ $stop_stage -gt 1 ]; then
-  recog_model=model.val${n_average}.avg.best
+  if ${use_valbest_average}; then
+    recog_model=model.val${n_average}.avg.best
+  else
+    recog_model=model.last${n_average}.avg.best
+  fi
   lang_model=rnnlm.last${lm_n_average}.avg.best
   model=$cgn_root/${asr_model_folder}/results/$recog_model
   rnnlm=$cgn_root/${lm_model_folder}/$lang_model
   nj=$nj_decode
-  decode_dir=${work_dir}/decode_${eval_set}_${recog_model}_$(basename ${decode_config%.*})_${lmtag}${decode_tag}${dump_tag}
+  if [ "$dumpdir" = "dump_vl" ]; then
+    # Jasmin FL speech ASR
+    decode_dir=${work_dir}/decode_vl_${eval_set}_${recog_model}_$(basename ${decode_config%.*})_${lmtag}${decode_tag}${dump_tag}
+  else
+    # By default, Jasmin NL speech ASR
+    decode_dir=${work_dir}/decode_${eval_set}_${recog_model}_$(basename ${decode_config%.*})_${lmtag}${decode_tag}${dump_tag} 
+  fi
   feat_recog_dir=$dumpdir/$eval_set/delta${do_delta}${dump_tag}/
   if $if_gpu_decoding; then
     ngpu=${ngpu_decode}

@@ -19,6 +19,8 @@ numpy
 Corpus:
 Jasmin corpus (https://www.aclweb.org/anthology/L06-1141/)
 
+Update 18 May:
+asr1/ contains experiments on evaluating Jasmin Netherlands (NL) Dutch data partition using a ESPnet trained Attention encoder-decoder ASR model.
 
 If you have any questions in using this repo, please contact:
 Dr. Siyuan Feng (s.feng@tudelft.nl),
