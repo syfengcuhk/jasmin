@@ -16,7 +16,11 @@ debug_subset=
 lang="vl" # 
 local_dir=data/local/data
 cgn_root=/tudelft.net/staff-bulk/ewi/insy/SpeechLab/siyuanfeng/software/kaldi/egs/cgn/s5
+cgn_architecture_spec="tdnn_blstm1a" # or tdnn_1g
 cgn_model_spec= #"_comp_o" if you want to use a CGN ASR trained exclusively on CGN Read  material
+cgn_model_path="exp/chain/tdnnf_related/aug_related"
+label_delay="_ld5"
+ivector_suffix="_aug_sp"
 use_gpu=false
 num_threads_decode=1
 extra_left_context=50
@@ -27,8 +31,10 @@ test_gender=female
 . utils/parse_options.sh
 . ./cmd.sh
 . ./path.sh
-cgn_asr_model=$cgn_root/exp/chain/tdnnf_related/aug_related/tdnn_blstm1a${cgn_model_spec}_sp_bi_epoch4_ld5
-ivector_model=$cgn_root/exp/nnet3/extractor_aug_sp/
+cgn_asr_model=$cgn_root/${cgn_model_path}/${cgn_architecture_spec}${cgn_model_spec}_sp_bi_epoch4${label_delay}
+ivector_model=$cgn_root/exp/nnet3/extractor${ivector_suffix}/
+#cgn_asr_model=$cgn_root/exp/chain/tdnnf_related/aug_related/tdnn_blstm1a${cgn_model_spec}_sp_bi_epoch4_ld5
+#ivector_model=$cgn_root/exp/nnet3/extractor_aug_sp/
 echo "$stage: $stop_stage: "
 if $use_gpu; then
   gpu_suffix="_gpu"
@@ -158,19 +164,19 @@ fi
 if [ $stage -le 11 ] && [ $stop_stage -gt 11 ]; then
   echo "Extracting ivectors: For Read speech, all data "
   input_data=data/test_read_all_hires
-  steps/online/nnet2/extract_ivectors_online.sh --cmd "$train_cmd" --nj $nj $input_data $ivector_model exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+  steps/online/nnet2/extract_ivectors_online.sh --cmd "$train_cmd" --nj $nj $input_data $ivector_model exp/nnet3/ivectors_cgn${ivector_suffix}_test_read_all
 
 fi
 if [ $stage -le 12 ] && [ $stop_stage -gt 12 ]; then
   echo "Extracting ivectors: For HMI speech, all data "
   input_data=data/test_hmi_all_hires
-  steps/online/nnet2/extract_ivectors_online.sh --cmd "$train_cmd" --nj $nj $input_data $ivector_model exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+  steps/online/nnet2/extract_ivectors_online.sh --cmd "$train_cmd" --nj $nj $input_data $ivector_model exp/nnet3/ivectors_cgn${ivector_suffix}_test_hmi_all
 
 fi
 if [ $stage -le 21 ] && [ $stop_stage -gt 21 ]; then
   echo "Decoding...: For Read speech, all data"
   input_data=data/test_read_all_hires${debug_subset}
-  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+  input_ivector=exp/nnet3/ivectors_cgn${ivector_suffix}_test_read_all
   output_suffix=test_read_all${debug_subset}
   # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
   steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
@@ -188,7 +194,7 @@ fi
 if [ $stage -le 22 ] && [ $stop_stage -gt 22 ]; then
   echo "Decoding...: For HMI speech, all data"
   input_data=data/test_hmi_all_hires${debug_subset}
-  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+  input_ivector=exp/nnet3/ivectors_cgn${ivector_suffix}_test_hmi_all
   output_suffix=test_hmi_all${debug_subset}
   # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
   steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0 --stage $decode_stage \
@@ -206,7 +212,7 @@ fi
 if [ $stage -le 31 ] && [ $stop_stage -gt 31 ]; then
   echo "Decoding...: For Read speech, Group specific data"
   input_data=data/test_read_group${test_group_ID}_hires${debug_subset}
-  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+  input_ivector=exp/nnet3/ivectors_cgn${ivector_suffix}_test_read_all
   output_suffix=test_read_group${test_group_ID}${debug_subset}
   # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
   steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
@@ -224,7 +230,7 @@ fi
 if [ $stage -le 32 ] && [ $stop_stage -gt 32 ]; then
   echo "Decoding...: For HMI speech, Group specific data"
   input_data=data/test_hmi_group${test_group_ID}_hires${debug_subset}
-  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+  input_ivector=exp/nnet3/ivectors_cgn${ivector_suffix}_test_hmi_all
   output_suffix=test_hmi_group${test_group_ID}${debug_subset}
   # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
   steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
@@ -242,7 +248,7 @@ fi
 if [ $stage -le 33 ] && [ $stop_stage -gt 33 ]; then
   echo "Decoding...: For Read speech, gender-specific data"
   input_data=data/test_read_${test_gender}_hires${debug_subset}
-  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+  input_ivector=exp/nnet3/ivectors_cgn${ivector_suffix}_test_read_all
   output_suffix=test_read_${test_gender}${debug_subset}
   steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
     --online-ivector-dir $input_ivector \
@@ -259,7 +265,7 @@ fi
 if [ $stage -le 34 ] && [ $stop_stage -gt 34 ]; then
   echo "Decoding...: For HMI speech, gender-specific data"
   input_data=data/test_hmi_${test_gender}_hires${debug_subset}
-  input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+  input_ivector=exp/nnet3/ivectors_cgn${ivector_suffix}_test_hmi_all
   output_suffix=test_hmi_${test_gender}${debug_subset}
   steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
     --online-ivector-dir $input_ivector \
@@ -275,10 +281,9 @@ if [ $stage -le 34 ] && [ $stop_stage -gt 34 ]; then
 fi
 if [ $stage -le 35 ] && [ $stop_stage -gt 35 ]; then
   # Gender-specific on group-wise Read data
-  for gender_label in male ; do
-  #for gender_label in female male; do
+  for gender_label in female male; do
     input_data=data/test_read_group${test_group_ID}_${gender_label}_hires${debug_subset}
-    input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_read_all
+    input_ivector=exp/nnet3/ivectors_cgn${ivector_suffix}_test_read_all
     output_suffix=test_read_group${test_group_ID}_${gender_label}${debug_subset}
     # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
     steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \
@@ -300,7 +305,7 @@ if [ $stage -le 36 ] && [ $stop_stage -gt 36 ]; then
   # Gender-specific on group-wise HMI data
   for gender_label in female male; do
     input_data=data/test_hmi_group${test_group_ID}_${gender_label}_hires${debug_subset}
-    input_ivector=exp/nnet3/ivectors_cgn_aug_sp_test_hmi_all
+    input_ivector=exp/nnet3/ivectors_cgn${ivector_suffix}_test_hmi_all
     output_suffix=test_hmi_group${test_group_ID}_${gender_label}${debug_subset}
     # ref. cgn/s5/local/chain/tuning/data_aug/run_tdnn_blstm_1a.sh
     steps/nnet3/decode.sh --num-threads $num_threads_decode --nj $nj --cmd "$decode_cmd" --acwt 1.0 --post-decode-acwt 10.0  --stage $decode_stage  \

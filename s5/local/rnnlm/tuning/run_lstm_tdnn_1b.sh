@@ -43,12 +43,12 @@ num_jobs_final=1
 ac_model_dir=/tudelft.net/staff-bulk/ewi/insy/SpeechLab/siyuanfeng/software/kaldi/egs/cgn/s5/exp/chain/tdnnf_related/aug_related/tdnn_blstm1a_sp_bi_epoch4_ld5
 ngram_order=4
 #decode_dir_suffix=rnnlm
-
+gpu_suffix="_gpu"
 . ./cmd.sh
 . ./utils/parse_options.sh
 [ -z "$cmd" ] && cmd=$train_cmd
 
-decode_sets=decode_jasmin_${lang}_${input_data}_gpu
+decode_sets=decode_jasmin_${lang}_${input_data}${gpu_suffix}
 decode_dir_suffix=rnnlm_lstm_tdnn_1b_epoch${epochs}
 dir=$cgn_root/exp/rnnlm_lstm_tdnn_1b_epoch${epochs}
 text=data/local/dict_nosp/cleaned.gz
@@ -56,6 +56,9 @@ wordlist=data/lang_chain/words.txt
 text_dir=data/rnnlm/text_nosp
 mkdir -p $dir/config
 set -e
+
+
+
 
 #for f in $text $wordlist; do
 #  [ ! -f $f ] && \
